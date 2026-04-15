@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Disha</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --black: #0a0a0a;
+      --white: #f5f5f3;
+      --mid: #888;
+      --serif: 'DM Serif Display', Georgia, serif;
+      --sans: 'DM Sans', sans-serif;
+    }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--white);
+      color: var(--black);
+      font-family: var(--sans);
+      overflow: hidden;
+      height: 100dvh;
+    }
+
+    /* ── PAGE WRAPPER ── */
+    #app {
+      position: relative;
+      width: 100%;
+      height: 100dvh;
+    }
+
+    /* ── PAGE 1 ── */
+    #page1 {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      z-index: 2;
+      transition: opacity 0.9s cubic-bezier(0.4, 0, 0.2, 1),
+                  transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    #page1.exit {
+      opacity: 0;
+      transform: translateY(-24px);
+      pointer-events: none;
+    }
+
+    .headline {
+      font-family: var(--serif);
+      font-size: clamp(2.4rem, 9vw, 5rem);
+      font-weight: 400;
+      font-style: italic;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      text-align: center;
+      color: var(--black);
+      opacity: 0;
+      transform: translateY(16px);
+      animation: rise 1s cubic-bezier(0.4, 0, 0.2, 1) 0.2s forwards;
+    }
+
+    .trigger {
+      margin-top: 3rem;
+      font-family: var(--sans);
+      font-size: 0.78rem;
+      font-weight: 300;
+      letter-spacing: 0.28em;
+      text-transform: lowercase;
+      color: var(--mid);
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0.5rem 0;
+      position: relative;
+      opacity: 0;
+      animation: rise 1s cubic-bezier(0.4, 0, 0.2, 1) 0.7s forwards;
+      transition: color 0.3s;
+    }
+
+    .trigger::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--black);
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .trigger:hover {
+      color: var(--black);
+    }
+
+    .trigger:hover::after {
+      width: 100%;
+    }
+
+    /* ── PAGE 2 ── */
+    #page2 {
+      position: absolute;
+      inset: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      z-index: 1;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.9s cubic-bezier(0.4, 0, 0.2, 1) 0.1s;
+    }
+
+    #page2.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .page2-inner {
+      min-height: 100dvh;
+      padding: clamp(3rem, 10vw, 6rem) clamp(1.6rem, 6vw, 4rem);
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: var(--sans);
+      font-size: 0.7rem;
+      font-weight: 400;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--mid);
+      margin-bottom: 2.4rem;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .section-label.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    .page2-title {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 7vw, 3.4rem);
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+      color: var(--black);
+      margin-bottom: 4rem;
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.8s ease 0.1s, transform 0.8s ease 0.1s;
+    }
+
+    .page2-title.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* ── LIST ── */
+    .list {
+      list-style: none;
+      border-top: 1px solid #d8d8d6;
+    }
+
+    .list-item {
+      border-bottom: 1px solid #d8d8d6;
+      padding: 1.6rem 0;
+      display: flex;
+      gap: 1.4rem;
+      align-items: flex-start;
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .list-item.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    .item-num {
+      font-family: var(--sans);
+      font-size: 0.68rem;
+      font-weight: 300;
+      color: var(--mid);
+      letter-spacing: 0.1em;
+      padding-top: 0.25rem;
+      min-width: 1.6rem;
+      flex-shrink: 0;
+    }
+
+    .item-text {
+      font-family: var(--sans);
+      font-size: clamp(1rem, 2.8vw, 1.15rem);
+      font-weight: 300;
+      line-height: 1.65;
+      color: var(--black);
+    }
+
+    /* ── CLOSING ── */
+    .closing {
+      margin-top: 5rem;
+      padding-bottom: 4rem;
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .closing.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    .closing-line {
+      font-family: var(--serif);
+      font-size: clamp(1.1rem, 3.5vw, 1.4rem);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--black);
+      line-height: 1.5;
+    }
+
+    .closing-sub {
+      margin-top: 1rem;
+      font-family: var(--sans);
+      font-size: 0.72rem;
+      font-weight: 300;
+      letter-spacing: 0.2em;
+      color: var(--mid);
+      text-transform: uppercase;
+    }
+
+    /* ── KEYFRAMES ── */
+    @keyframes rise {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Scrollbar (desktop) */
+    #page2::-webkit-scrollbar { width: 3px; }
+    #page2::-webkit-scrollbar-track { background: transparent; }
+    #page2::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
+  </style>
+</head>
+<body>
+  <div id="app">
+
+    <!-- PAGE 1 -->
+    <section id="page1">
+      <h1 class="headline">Disha, I like you.</h1>
+      <button class="trigger" id="enterBtn" aria-label="Continue">ka asa?</button>
+    </section>
+
+    <!-- PAGE 2 -->
+    <section id="page2">
+      <div class="page2-inner">
+
+        <h2 class="page2-title observe">Things I Like<br>About You(because u keep asking me sarkha sarkha so this website will be live
+            if u ever got this question again just visit this website )
+            I hope u dont break my heart tho
+        </h2>
+
+        <ul class="list">
+          <!-- Edit these items freely -->
+          <li class="list-item observe">
+            <span class="item-num">01</span>
+            <span class="item-text">I like the spark in your eyes, i just love it your eyes shine</span>
+          </li>
+          <li class="list-item observe">
+            <span class="item-num">02</span>
+            <span class="item-text">You are HOT🔥 and cutsy cutsy</span>
+          </li>
+          <li class="list-item observe">
+            <span class="item-num">03</span>
+            <span class="item-text">You are persistent and thats good from my pov</span>
+          </li>
+          <li class="list-item observe">
+            <span class="item-num">04</span>
+            <span class="item-text">I just like youuu khup jast</span>
+          </li>
+          <li class="list-item observe">
+            <span class="item-num">05</span>
+            <span class="item-text">I feel like I can be myself around u</span>
+          </li>
+          <li class="list-item observe">
+            <span class="item-num">06</span>
+            <span class="item-text">kids also love you and yk i am kid too so yea </span>
+          </li>
+        </ul>
+
+        <div class="closing observe">
+          <p class="closing-line">the list will go on when we know each other better and yea this site 
+            does not mean that i dont like telling u things that i like abt u</p>
+          <p class="closing-sub">— Shubham with love❤️</p>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    const page1 = document.getElementById('page1');
+    const page2 = document.getElementById('page2');
+    const enterBtn = document.getElementById('enterBtn');
+
+    // Transition to page 2
+    enterBtn.addEventListener('click', () => {
+      page1.classList.add('exit');
+      page2.classList.add('active');
+
+      // Unlock body scroll after transition
+      setTimeout(() => {
+        document.body.style.overflow = 'hidden';
+        triggerObserved();
+      }, 400);
+    });
+
+    // Scroll-based fade-in on page 2
+    function triggerObserved() {
+      const items = page2.querySelectorAll('.observe');
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {
+        root: page2,
+        threshold: 0.15,
+        rootMargin: '0px 0px -30px 0px'
+      });
+
+      items.forEach((el, i) => {
+        el.style.transitionDelay = `${i * 0.07}s`;
+        observer.observe(el);
+      });
+    }
+  </script>
+</body>
+</html>
